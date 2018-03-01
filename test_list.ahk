@@ -5,7 +5,7 @@ Gui, Add, Text,W300,
 Gui, Show, W300 H50 X0 Y0, Auto Status
 SetTitleMatchMode, 3
 CoordMode, Pixel, Screen
-CoordMode, Mouse, Screen
+CoordMode, Mouse, Relative
 get_ngu_hon()
 {
     while (1)
@@ -89,17 +89,14 @@ find_and_click(path, name)
         else
             x := x + 20
         y := y + 20
-        ; Back user status before click
-        WinGetActiveTitle, userWindow
-        MouseGetPos, userX, userY
+
+        ;Click without using mouse
+        windowName := "NoxPlayer"
+        WinGetPos, winX, winY,,,%windowName%
         
-        ; Click image
-        MouseClick, left, %x%, %y%,, 0
-        Sleep, 100
-        
-        ;Restore user status
-        WinActivate, %userWindow%
-        MouseMove, %userX%, %userY%, 0
+        relativeX := x - winX
+        relativeY := y - winY
+        ControlClick, x%relativeX% y%relativeY%, %windowName% 
         
         ; confirm the click result
         outMsg := "Dang kiem tra do chinh xac chuot"
@@ -134,7 +131,8 @@ find_and_click(path, name)
         else
         {
             ControlSetText, Static2, Van con -> click chuot, Auto Status
-            MouseClick, left, %x%, %y%
+            ;Click without mouse
+            ControlClick, x%relativeX% y%relativeY%, %windowName% 
         }
         i := i + 1
         return 1
